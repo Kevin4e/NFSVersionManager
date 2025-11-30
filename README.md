@@ -18,7 +18,7 @@ Supported games:
 ## Usage
 To check the game, follow the prototype:
 ```cpp
-if (NFSVersionManager::isGAME()) {
+if (NFSVersionManager::is(NFSVersionManager::Game::TheGameToCheck)) {
     // if body
 }
 else {
@@ -26,12 +26,17 @@ else {
 }
 ```
 
-If the check has failed, the library builds an error message related to the game.  
+Function prototype:
+```cpp
+static inline bool is(Game g, bool buildError = false) noexcept;
+```
+If the check has failed, the library builds an error message related to the game if `buildError` is `true`.  
 For example, if the check for **Most Wanted v1.3** has failed, the error message is this:  
 
 ```text
-This .exe is not compatible
+This .exe is not compatible.
 Use Most Wanted v1.3 executable.
+Expected size: 3.178.496 bytes.
 ```
 
 You can directly display it with a message box by using:
@@ -46,16 +51,44 @@ NFSVersionManager::getErrorMessage();
 
 ---
 
-Available check functions:
+Available enum keys:
 
 ```cpp
-NFSVersionManager::isUG1();
-NFSVersionManager::isUG2();
-NFSVersionManager::isMW05();
-NFSVersionManager::isCarbon();
-NFSVersionManager::isPS();
-NFSVersionManager::isUC();
-NFSVersionManager::isTR();
+NFSVersionManager::Game::Underground;
+NFSVersionManager::Game::Underground2;
+NFSVersionManager::Game::MostWanted;
+NFSVersionManager::Game::Carbon;
+NFSVersionManager::Game::Prostreet;
+NFSVersionManager::Game::Undercover;
+NFSVersionManager::Game::TheRun;
+```
+
+---
+
+### Pro tip
+To avoid verbosity, use the following expression:
+```cpp
+using enum NFSVersionManager::Game;
+```
+You can now use an enum key without ```NFSVersionManager::```
+
+---
+
+### Full example
+```cpp
+BOOL WINAPI DllMain(HINSTANCE, DWORD fdwReason, LPVOID)
+{
+    if (fdwReason == DLL_PROCESS_ATTACH)
+    {
+        if (!NFSVersionManager::is(MostWanted, true)) // If the DLL has not been injected into Most Wanted v1.3
+        {
+            NFSVersionManager::displayErrorMessage("My Mod by Author123");
+            return FALSE; // Detach DLL
+        }
+    }
+
+    return TRUE;
+}
 ```
 
 ## Credits
