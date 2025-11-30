@@ -1,4 +1,4 @@
-# NFSVersionManager
+# NFS Version Manager
 Detects NFS game version using module entry point analysis
 
 ## Overview
