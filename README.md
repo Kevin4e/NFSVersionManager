@@ -70,7 +70,7 @@ To avoid verbosity, use the following expression:
 ```cpp
 using enum NFSVersionManager::Game;
 ```
-You can now use an enum key without ```NFSVersionManager::```
+You can now use an enum key without `NFSVersionManager::Game::`
 
 ---
 
