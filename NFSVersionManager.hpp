@@ -48,12 +48,11 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
-#include <algorithm>
 
 struct NFSVersionManager {
 public:
 	// Keys used to identify each supported game
-	enum class Game {
+	enum class GameKey {
 		Underground,
 		Underground2,
 		MostWanted,
@@ -61,12 +60,12 @@ public:
 		Prostreet,
 		Undercover,
 		TheRun,
-		Unknown
+		UnknownNFS // Internal fallback, not meant to be checked by users
 	};
 
 private:
 	struct GameInfo {
-		Game game;
+		GameKey gameKey;
 		std::string title;
 		std::string exeSize; // in bytes
 	};
@@ -92,46 +91,45 @@ private:
 
 	// Structure representing each game characterized by its executable's RVA, key, title and size in bytes
 	static inline const std::unordered_map<uintptr_t, GameInfo> games = {
-		{ 0x270CB5,  { Game::Underground,   "Underground v1.4",      "3.178.496 "} },
-		{ 0x35BCC7,  { Game::Underground2,  "Underground 2 v1.2",    "4.800.512" } },
-		{ 0x3C4040,  { Game::MostWanted,    "Most Wanted v1.3",      "6.029.312" } },
-		{ 0x47E926,  { Game::Carbon,        "Carbon v1.4",           "7.217.152" } },
-		{ 0x428C25,  { Game::Prostreet,     "Prostreet v1.1",       "28.739.656" } },
-		{ 0x4AEC55,  { Game::Undercover,    "Undercover v1.0.0.1",  "10.589.456" } },
-		{ 0x1005AFF, { Game::TheRun,        "The Run v1.1.0.0",     "38.027.264" } }
+		{ 0x270CB5,  { GameKey::Underground,   "Underground v1.4",      "3.178.496" } },
+		{ 0x35BCC7,  { GameKey::Underground2,  "Underground 2 v1.2",    "4.800.512" } },
+		{ 0x3C4040,  { GameKey::MostWanted,    "Most Wanted v1.3",      "6.029.312" } },
+		{ 0x47E926,  { GameKey::Carbon,        "Carbon v1.4",           "7.217.152" } },
+		{ 0x428C25,  { GameKey::Prostreet,     "Prostreet v1.1",       "28.739.656" } },
+		{ 0x4AEC55,  { GameKey::Undercover,    "Undercover v1.0.0.1",  "10.589.456" } },
+		{ 0x1005AFF, { GameKey::TheRun,        "The Run v1.1.0.0",     "38.027.264" } }
 	};
 
 public:
 	// Finds the game given the RVA
-	static inline Game game = []() noexcept {
+	static inline GameKey detectedGameKey = []() noexcept {
 		auto rvaIt = games.find(entryPointRVA);
-		if (rvaIt == games.end()) return Game::Unknown;
+		if (rvaIt == games.end()) return GameKey::UnknownNFS;
 
-		return (rvaIt->second).game;
+		return (rvaIt->second).gameKey;
 	}();
 
 	/*  Checks if the DLL has been injected into a specific game
 	 *  If not, there happen one of the two cases:
 	 * 
 	 *  - The input parameter (g) is a game, and it builds the error message if 'buildError' is true related to that game
-	 *  - The input parameter (g) is NOT a game (Game::Unknown) and it won't build an error message (because it's not related to a supported game)
+	 *  - The input parameter (g) is NOT a game (Game::UnknownNFS) and it won't build an error message (because it's not related to a supported game)
 	 * 
 	 *  Both cases return false, either way
 	 */ 
-	static inline bool is(Game g, bool buildError = false) noexcept {
-		if (g == game) // If it's the same as the current game
+	static inline bool is(GameKey gKey, bool buildError = false) noexcept {
+		if (gKey == detectedGameKey) // If it's the same as the detected game
 			return true;
 
-		auto gameInfoIt = std::find_if(games.begin(), games.end(), [g](const auto& pair) { // Find iterator of the game the same as 'g'
-			return pair.second.game == g;
-		});
+		if (buildError) {
+			auto gameInfoIt = std::find_if(games.begin(), games.end(), [gKey](const auto& pair) { // Find iterator of the game the same as 'g'
+				return pair.second.gameKey == gKey;
+			});
 
-		if (gameInfoIt == games.end())
-			return false;
+			if (gameInfoIt != games.end())
+				setError(gameInfoIt->second);
+		}
 		
-		if (buildError)
-			setError(gameInfoIt->second);
-
 		return false;
 	}
 
