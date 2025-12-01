@@ -18,7 +18,7 @@ Supported games:
 ## Usage
 To check the game, follow the prototype:
 ```cpp
-if (NFSVersionManager::is(NFSVersionManager::Game::TheGameToCheck)) {
+if (NFSVersionManager::is(NFSVersionManager::GameKey::TheGameToCheck)) {
     // if body
 }
 else {
@@ -26,9 +26,9 @@ else {
 }
 ```
 
-Function prototype:
+Function signature:
 ```cpp
-static inline bool is(Game g, bool buildError = false) noexcept;
+static inline bool is(Game gKey, bool buildError = false) noexcept;
 ```
 If the check has failed, the library builds an error message related to the game if `buildError` is `true`.  
 For example, if the check for **Most Wanted v1.3** has failed, the error message is this:  
@@ -54,31 +54,34 @@ NFSVersionManager::getErrorMessage();
 Available enum keys:
 
 ```cpp
-NFSVersionManager::Game::Underground;
-NFSVersionManager::Game::Underground2;
-NFSVersionManager::Game::MostWanted;
-NFSVersionManager::Game::Carbon;
-NFSVersionManager::Game::Prostreet;
-NFSVersionManager::Game::Undercover;
-NFSVersionManager::Game::TheRun;
+NFSVersionManager::GameKey::Underground;
+NFSVersionManager::GameKey::Underground2;
+NFSVersionManager::GameKey::MostWanted;
+NFSVersionManager::GameKey::Carbon;
+NFSVersionManager::GameKey::Prostreet;
+NFSVersionManager::GameKey::Undercover;
+NFSVersionManager::GameKey::TheRun;
+NFSVersionManager::GameKey::UnknownNFS; // Internal fallback, not meant to be checked by users
 ```
 
 ---
 
-### Pro tip
-To avoid verbosity, use the following expression:
+### Tip
+To reduce verbosity, use the following expression:
 ```cpp
-using enum NFSVersionManager::Game;
+using enum NFSVersionManager::GameKey; // Requires C++20
 ```
-You can now use an enum key without `NFSVersionManager::Game::`
+You can now use an enum key without `NFSVersionManager::GameKey::`
 
 ---
 
 ### Full example
 ```cpp
-BOOL WINAPI DllMain(HINSTANCE, DWORD fdwReason, LPVOID)
+using enum NFSVersionManager::GameKey;
+
+BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry point
 {
-    if (fdwReason == DLL_PROCESS_ATTACH)
+    if (ul_reason_for_call == DLL_PROCESS_ATTACH)
     {
         if (!NFSVersionManager::is(MostWanted, true)) // If the DLL has not been injected into Most Wanted v1.3
         {
