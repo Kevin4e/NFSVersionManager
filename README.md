@@ -36,7 +36,7 @@ For example, if the check for **Most Wanted v1.3** has failed, the error message
 ```text
 This .exe is not compatible.
 Use Most Wanted v1.3 executable.
-Expected size: 3.178.496 bytes.
+Expected size: 6.029.312 bytes.
 ```
 
 You can directly display it with a message box by using:
