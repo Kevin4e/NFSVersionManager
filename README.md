@@ -2,7 +2,7 @@
 Detects NFS game version using module entry point analysis
 
 ## Overview
-This library lets you check if a DLL has been injected into a specific NFS game.
+This library lets you check if a DLL was injected into a specific NFS game.
 
 **C++17+** is required.
 
@@ -24,29 +24,6 @@ if (NFSVersionManager::is(NFSVersionManager::GameKey::TheGameToCheck)) {
 else {
     // else body
 }
-```
-
-Function signature:
-```cpp
-static inline bool is(Game gKey, bool buildError = false) noexcept;
-```
-If the check has failed, the library builds an error message related to the game if `buildError` is `true`.  
-For example, if the check for **Most Wanted v1.3** has failed, the error message is this:  
-
-```text
-This .exe is not compatible.
-Use Most Wanted v1.3 executable.
-Expected size: 6.029.312 bytes.
-```
-
-You can directly display it with a message box by using:
-```cpp
-NFSVersionManager::displayErrorMessage("Message box title");
-```
-
-Or you can have it as string format by using:
-```cpp
-NFSVersionManager::getErrorMessage();
 ```
 
 ---
@@ -71,7 +48,7 @@ To reduce verbosity, use the following expression:
 ```cpp
 using enum NFSVersionManager::GameKey; // Requires C++20
 ```
-You can now use an enum key without `NFSVersionManager::GameKey::`
+You can now use any enum key listed above without `NFSVersionManager::GameKey::`
 
 ---
 
@@ -83,9 +60,17 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry po
 {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH)
     {
-        if (!NFSVersionManager::is(MostWanted, true)) // If the DLL has not been injected into Most Wanted v1.3
+        if (!NFSVersionManager::is(MostWanted)) // If the DLL was not injected into Most Wanted v1.3
         {
-            NFSVersionManager::displayErrorMessage("My Mod by Author123");
+            MessageBoxA (
+                nullptr,
+                "This .exe is not compatible. \r\n"
+                "Use Most Wanted v1.3 executable. \r\n"
+                "Expected size: 6.029.312 bytes.",
+                "NFSMW Heat Raise via CTS by Kevin4e",
+                MB_ICONERROR
+            );
+            
             return FALSE; // Detach DLL
         }
     }
