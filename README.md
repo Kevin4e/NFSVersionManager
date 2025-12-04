@@ -67,7 +67,7 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry po
                 "This .exe is not compatible. \r\n"
                 "Use Most Wanted v1.3 executable. \r\n"
                 "Expected size: 6.029.312 bytes.",
-                "NFSMW Heat Raise via CTS by Kevin4e",
+                "My Cool Mod by Author123",
                 MB_ICONERROR
             );
             
