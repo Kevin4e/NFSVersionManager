@@ -15,8 +15,8 @@
  *  
  *  Windows-only library.
  * 
- *  Version v1.4.0
- *  GitHub page: https://github.com/Kevin4e/NFSVersionManager
+ *  Version v1.4.1
+ *  GitHub repository: https://github.com/Kevin4e/NFSVersionManager
  *  Author: Kevin4e
  *
  *  Target: C++17+
@@ -45,13 +45,14 @@
  *  SOFTWARE.
  */
 
-#include <Windows.h>
 #include <cstdint>
+
+#include <Windows.h>
 
 class NFSVersionManager {
 public:
 	// Keys used to identify each supported game
-	enum class GameKey {
+	enum class GameKey : std::uint8_t {
 		Underground,
 		Underground2,
 		MostWanted,
@@ -71,9 +72,9 @@ private:
 
 	// Finds the entry point relative virtual address (RVA) of the process into which the DLL was injected
 	static inline const DWORD entryPointRVA = []() noexcept {
-		const uintptr_t baseAddress = reinterpret_cast<uintptr_t>(GetModuleHandleA(nullptr));
-		const IMAGE_DOS_HEADER* dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddress);
-		const IMAGE_NT_HEADERS* ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddress + dosHeader->e_lfanew);
+		const std::uintptr_t baseAddress = reinterpret_cast<std::uintptr_t>(GetModuleHandleA(nullptr));
+		const IMAGE_DOS_HEADER* const dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(baseAddress);
+		const IMAGE_NT_HEADERS* const ntHeader = reinterpret_cast<const IMAGE_NT_HEADERS*>(baseAddress + dosHeader->e_lfanew);
 
 		return ntHeader->OptionalHeader.AddressOfEntryPoint;
 	}();
@@ -91,6 +92,8 @@ private:
 	};
 
 public:
+	NFSVersionManager() = delete; // Prevents initialization
+
 	// Finds the game given the RVA
 	static inline const GameKey detectedGameKey = []() noexcept {
 		for (const auto& g : games)
@@ -101,7 +104,8 @@ public:
 	}();
 
 	// Checks if the DLL was injected into a specific game
+	[[nodiscard]]
 	static inline bool is(GameKey gameKey) noexcept {
-		return gameKey == detectedGameKey; // If it's the same as the detected game
+		return gameKey == detectedGameKey;
 	}
 };
