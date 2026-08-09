@@ -13,6 +13,7 @@ Supported games:
 - **Carbon**            `v1.4`
 - **Prostreet**         `v1.1`
 - **Undercover**        `v1.0.0.1`
+- **Shift**             `v1.0.2.0`
 - **The Run**           `v1.1.0.0`
 
 ## Usage
@@ -28,17 +29,19 @@ else {
 
 ---
 
-Available enum keys:
+### Enums
 
 ```cpp
-NFSVersionManager::GameKey::Underground;
-NFSVersionManager::GameKey::Underground2;
-NFSVersionManager::GameKey::MostWanted;
-NFSVersionManager::GameKey::Carbon;
-NFSVersionManager::GameKey::Prostreet;
-NFSVersionManager::GameKey::Undercover;
-NFSVersionManager::GameKey::TheRun;
-NFSVersionManager::GameKey::UnknownNFS; // Internal fallback, not meant to be checked by users
+enum class GameKey {
+	Underground,
+	Underground2,
+	MostWanted,
+	Carbon,
+	Prostreet,
+	Undercover,
+	Shift,
+	TheRun,
+};
 ```
 
 ---
