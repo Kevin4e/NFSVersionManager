@@ -82,5 +82,7 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry po
 }
 ```
 
+## License
+- See [LICENSE](LICENSE)
 ## Credits
 - **Kevin4e** - Author of the library
