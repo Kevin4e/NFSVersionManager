@@ -1,5 +1,5 @@
 # NFS Version Manager
-Detects NFS game version using module entry point analysis
+![Thumbnail](assets/thumbnail.png)
 
 ## Overview
 This library lets you check if a DLL was injected into a specific NFS game.
