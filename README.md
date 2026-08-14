@@ -55,7 +55,7 @@ enum class GameKey {
 To reduce verbosity, use the following expression:
 
 ```cpp
-using enum NFSVersionManager::GameKey; // Requires C++20
+using enum NFSVersionManager::GameKey; // Requires C++20+
 ```
 
 You can now use any enum key listed above without `NFSVersionManager::GameKey::`.
