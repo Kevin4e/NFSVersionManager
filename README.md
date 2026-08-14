@@ -1,8 +1,10 @@
 # NFS Version Manager
+
 ![Thumbnail](assets/thumbnail.png)
 
 ## Overview
-This library lets you check if a DLL was injected into a specific NFS game.
+
+This library lets you check if a DLL was loaded into a specific NFS game.
 
 **C++17+** is required.
 
@@ -17,13 +19,15 @@ Supported games:
 - **The Run**           `v1.1.0.0`
 
 ## Usage
+
 To check the game, follow the prototype:
+
 ```cpp
 if (NFSVersionManager::is(NFSVersionManager::GameKey::TheGameToCheck)) {
-    // if body
+
 }
 else {
-    // else body
+
 }
 ```
 
@@ -33,39 +37,43 @@ else {
 
 ```cpp
 enum class GameKey {
-	Underground,
-	Underground2,
-	MostWanted,
-	Carbon,
-	Prostreet,
-	Undercover,
-	Shift,
-	TheRun,
+	Underground,   // Underground v1.4
+	Underground2,  // Underground 2 v1.2
+	MostWanted,    // Most Wanted 2005 v1.3
+	Carbon,        // Carbon v1.4
+	Prostreet,     // ProStreet v1.1
+	Undercover,    // Undercover v1.0.0.1
+	Shift,         // Shift v1.0.2.0
+	TheRun,        // The Run v1.1.0.0
 };
 ```
 
 ---
 
 ### Tip
+
 To reduce verbosity, use the following expression:
+
 ```cpp
 using enum NFSVersionManager::GameKey; // Requires C++20
 ```
-You can now use any enum key listed above without `NFSVersionManager::GameKey::`
+
+You can now use any enum key listed above without `NFSVersionManager::GameKey::`.
 
 ---
 
 ### Full example
+
 ```cpp
 using enum NFSVersionManager::GameKey;
 
 BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry point
 {
-    if (ul_reason_for_call == DLL_PROCESS_ATTACH)
+    if (ul_reason_for_call == DLL_PROCESS_ATTACH) // DLL is being loaded
     {
-        if (!NFSVersionManager::is(MostWanted)) // If the DLL was not injected into Most Wanted v1.3
+        if (!NFSVersionManager::is(MostWanted)) // If the DLL was not loaded into Most Wanted v1.3
         {
-            MessageBoxA (
+            MessageBoxA(
                 nullptr,
                 "This .exe is not compatible. \r\n"
                 "Use Most Wanted v1.3 executable. \r\n"
@@ -78,11 +86,14 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD ul_reason_for_call, LPVOID) // DLL entry po
         }
     }
 
-    return TRUE;
+    return TRUE; // Keep DLL attached
 }
 ```
 
 ## License
+
 - See [LICENSE](LICENSE)
+
 ## Credits
-- **Kevin4e** - Author of the library
+
+- [Kevin4e](https://github.com/Kevin4e/) - Author of the library
